@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      
+    </style>
+  </head>
+  <body>
+    <button id="capture">capture</button>
+    <br>
+    <textarea id="result" rows="10" cols="80"></textarea>
+    <br>
+    <p><a href="/api/capture" target="_blank" rel="noopener">/api/capture</a></p>
+    <br>
+    <canvas id="myCanvas"></canvas>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.139.2/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./assets/js/index.js"></script>
+    <script>
+      const capture=document.querySelector("#capture");
+      const result=document.querySelector("#result");
+      capture.addEventListener("click",async ()=>{
+        await window.app.setupPromise;
+        result.value = window.app.draw();
+      })
+
+    </script>
+  </body>
+</html>

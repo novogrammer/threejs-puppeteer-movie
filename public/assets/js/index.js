@@ -76,12 +76,12 @@ class App {
     animate();
   }
   onTick() {
-    this.update();
+    const time = performance.now() / 1000;
+    this.update(time);
     this.draw();
   }
-  update() {
+  update(time) {
     const { cube } = this.three;
-    const time = performance.now() / 1000;
     cube.rotation.x = time;
     cube.rotation.y = time;
   }

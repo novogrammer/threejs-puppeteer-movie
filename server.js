@@ -42,7 +42,7 @@ async function main() {
   app.get(API_CAPTURE_URL,async (req,res)=>{
     const page = await browser.newPage();
 
-    const text = req.params.text ?? "でふぉると";
+    const text = req.query.text ?? "でふぉると";
     await page.goto(`${url}?text=${encodeURIComponent(text)}`);
     // await page.waitForNetworkIdle();
 

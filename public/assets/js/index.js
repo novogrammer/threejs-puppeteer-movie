@@ -8,6 +8,7 @@ const HEIGHT = 512;
 class App {
   constructor() {
     this.loadedAssets = {};
+    this.searchParams=new URLSearchParams(location.search);
     this.setupPromise=new Promise((resolve,reject)=>{
       this.loadAsync().then(() => {
         this.setupThree();
@@ -34,6 +35,42 @@ class App {
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
+
+    const PLANE_SIZE=10;
+    const plane = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry(PLANE_SIZE,PLANE_SIZE),
+      new THREE.MeshBasicMaterial({
+        color:0xffffff,
+      })
+    );
+    plane.position.z = PLANE_SIZE * 0.5 / Math.tan(camera.fov * 0.5 * THREE.MathUtils.DEG2RAD) * -1 + camera.position.z;
+    scene.add(plane);
+    {
+      const text = this.searchParams.get("text") ?? "foo";
+      console.log(text);
+      const canvas = document.createElement("canvas");
+      canvas.width=1024;
+      canvas.height=1024;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle="#ff0000";
+      ctx.fillRect(0,0,1024,1024);
+      ctx.fillStyle="#00ff00";
+      const DEFAULT_FONT_SIZE=512;
+      let fontSize=512;
+      ctx.font=`${fontSize}px sans-serif`;
+      const textWidth = ctx.measureText(text).width;
+      if(canvas.width<textWidth){
+        fontSize=Math.floor(DEFAULT_FONT_SIZE/textWidth*canvas.width);
+        ctx.font=`${fontSize}px sans-serif`;
+      }
+      ctx.textAlign="center";
+      ctx.fillText(text,1024/2,1024/2);
+      plane.material.color=null;
+      plane.material.map=new THREE.CanvasTexture(canvas);
+      // console.log(canvas.toDataURL());
+      plane.material.needsUpdate=true;
+    }
+
 
     // const geometry = new THREE.BoxGeometry();
     // const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );

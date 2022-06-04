@@ -43,13 +43,15 @@ async function main() {
     const page = await browser.newPage();
 
     const text = req.query.text ?? "でふぉると";
+    const time = Number(req.query.time ?? "0");
     await page.goto(`${url}?text=${encodeURIComponent(text)}`);
     // await page.waitForNetworkIdle();
 
-    const result = await page.evaluate(async ()=>{
+    const result = await page.evaluate(async (time)=>{
       await window.app.setupPromise;
+      window.app.update(time);
       return window.app.draw();
-    });
+    },time);
     await page.close();
 
     console.log("result :",result);

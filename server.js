@@ -20,6 +20,7 @@ app.listen(3000);
 async function main() {
   const url = "http://localhost:3000/";
   const API_CAPTURE_URL="/api/capture";
+  const API_CAPTURE_ALL_URL="/api/capture_all";
 
   const args=[
     "--no-sandbox",
@@ -54,12 +55,42 @@ async function main() {
     },time);
     await page.close();
 
-    console.log("result :",result);
+    // console.log("result :",result);
 
     res.json({result});
 
   });
   console.log(`begin ${API_CAPTURE_URL}`);
+
+  app.get(API_CAPTURE_ALL_URL,async (req,res)=>{
+    const page = await browser.newPage();
+
+    const text = req.query.text ?? "でふぉると";
+    const fps = Number(req.query.fps ?? "30");
+    const duration = Number(req.query.duration ?? "1");
+    await page.goto(`${url}?text=${encodeURIComponent(text)}`);
+    // await page.waitForNetworkIdle();
+
+    const resultList = await page.evaluate(async (fps,duration)=>{
+      await window.app.setupPromise;
+      const frames = fps * duration;
+      const resultList=[];
+      for(let i=0;i<frames;++i){
+        const time=i/fps;
+        window.app.update(time);
+        resultList.push(window.app.draw());
+      }
+      return resultList;
+    },fps,duration);
+    await page.close();
+
+    // console.log("result :",result);
+
+    res.json({resultList});
+
+  });
+  console.log(`begin ${API_CAPTURE_ALL_URL}`);
+
 }
 
 main();

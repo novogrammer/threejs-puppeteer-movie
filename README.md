@@ -25,6 +25,8 @@ M1 Macだとinotifyの都合でうまく動かない。<br>
 
 http://localhost:3000/api/capture にアクセスするとbase64で取得できる。
 
+http://localhost:3000/api/capture_all にアクセスするとbase64のリストを取得できる。
+
 
 コンテンツサーバーも同じサーバーだが、実際の運用ではポートを分けるなどする。 http://localhost:3000/
 
